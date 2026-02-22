@@ -3,36 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cortador de Vídeo - Desktop</title>
+  <title>Editor de Corte 9:16</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="app">
-    <h1>Cortador de Vídeo (Manual)</h1>
+    <h1>Editor de Corte 9:16 (Desktop)</h1>
 
-    <section class="panel">
-      <h2>Vídeo</h2>
-      <label for="videoInput">Selecione um vídeo local</label>
-      <input id="videoInput" type="file" accept="video/*" />
-      <video id="video" controls></video>
-    </section>
-
-    <section class="panel grid">
+    <section class="panel controls-grid">
       <div>
-        <h2>Corte</h2>
+        <h2>1) Fonte de vídeo</h2>
+        <label for="videoInput">Selecione um vídeo local</label>
+        <input id="videoInput" type="file" accept="video/*" />
+      </div>
+
+      <div>
+        <h2>2) Corte manual</h2>
         <label for="startTime">Início (mm:ss ou ss)</label>
         <input id="startTime" type="text" placeholder="00:10" />
 
         <label for="endTime">Fim (mm:ss ou ss)</label>
         <input id="endTime" type="text" placeholder="00:40" />
 
-        <button id="previewCutBtn">Pré-visualizar corte</button>
+        <button id="previewCutBtn">Prévia do corte</button>
       </div>
 
       <div>
-        <h2>Legenda manual</h2>
+        <h2>3) Ajustes do frame</h2>
+        <label for="zoomRange">Zoom do vídeo</label>
+        <input id="zoomRange" type="range" min="1" max="3" step="0.01" value="1" />
+        <p class="help">Dica: clique e arraste o vídeo na prévia para reposicionar o enquadramento.</p>
+      </div>
+    </section>
+
+    <section class="panel editor-layout">
+      <div>
+        <h2>Prévia interativa (9:16)</h2>
+        <div id="previewStage" class="preview-stage">
+          <video id="sourceVideo" playsinline></video>
+          <div id="captionOverlay" class="caption-overlay" contenteditable="true">Digite a legenda aqui e arraste com o mouse</div>
+        </div>
+
+        <div class="editor-actions">
+          <button id="playPauseBtn">Play/Pause</button>
+          <button id="downloadBtn">Baixar corte 9:16</button>
+        </div>
+      </div>
+
+      <div>
+        <h2>4) Legenda</h2>
         <label for="captionText">Texto da legenda</label>
-        <textarea id="captionText" rows="4" placeholder="Digite aqui a legenda..."></textarea>
+        <textarea id="captionText" rows="4" placeholder="Digite a legenda..."></textarea>
 
         <label for="fontFamily">Fonte</label>
         <select id="fontFamily">
@@ -44,21 +65,16 @@
         </select>
 
         <label for="fontSize">Tamanho</label>
-        <input id="fontSize" type="range" min="14" max="64" value="32" />
+        <input id="fontSize" type="range" min="14" max="72" value="32" />
 
-        <label for="captionX">Posição horizontal (%)</label>
-        <input id="captionX" type="range" min="0" max="100" value="50" />
+        <label for="fontColor">Cor</label>
+        <input id="fontColor" type="color" value="#ffffff" />
 
-        <label for="captionY">Posição vertical (%)</label>
-        <input id="captionY" type="range" min="0" max="100" value="85" />
+        <pre id="output">Aguardando edição...</pre>
       </div>
     </section>
 
-    <section class="panel">
-      <h2>Configuração gerada</h2>
-      <button id="generateBtn">Gerar JSON da edição</button>
-      <pre id="output">Aguardando configuração...</pre>
-    </section>
+    <canvas id="exportCanvas" width="1080" height="1920" hidden></canvas>
   </main>
 
   <script src="script.js"></script>
