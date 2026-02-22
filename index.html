@@ -1,56 +1,99 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scruton Filosofia</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube AI Cutter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Cabeçalho -->
-    <header>
-        <div class="container">
-            <h1>Scruton Filosofia</h1>
-            <nav>
-                <button class="menu-toggle">☰</button>
-                <ul class="nav-menu">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Sobre</a></li>
-                    <li><a href="#">Contato</a></li>
-                </ul>
-            </nav>
+  <main class="app-shell">
+    <section class="bento hero-card">
+      <p class="eyebrow">Mobile First · Bento Box</p>
+      <h1>Cortador de vídeos do YouTube com IA Gemini</h1>
+      <p class="muted">Cole o link, escolha a duração do corte e personalize as legendas para gerar shorts prontos para publicação.</p>
+    </section>
+
+    <section class="bento input-card">
+      <h2>1) Vídeo + IA</h2>
+      <label for="youtubeUrl">URL do YouTube</label>
+      <input id="youtubeUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." />
+
+      <label for="geminiKey">Gemini API Key</label>
+      <input id="geminiKey" type="password" placeholder="AIza..." />
+
+      <button id="analyzeBtn">Analisar e sugerir cortes</button>
+      <p class="help">Usamos Gemini para sugerir os melhores momentos do vídeo. A chave fica apenas no navegador.</p>
+    </section>
+
+    <section class="bento cut-card">
+      <h2>2) Tamanho do corte</h2>
+      <div class="chips" id="durationChips">
+        <button class="chip active" data-duration="30s">30s</button>
+        <button class="chip" data-duration="45s">45s</button>
+        <button class="chip" data-duration="1m">1m</button>
+        <button class="chip" data-duration="1m20s">1m20s</button>
+        <button class="chip" data-duration="1m45s">1m45s</button>
+      </div>
+      <p class="selected-duration">Selecionado: <strong id="selectedDuration">30s</strong></p>
+    </section>
+
+    <section class="bento subtitle-card">
+      <h2>3) Legendas</h2>
+      <div class="grid-2">
+        <div>
+          <label for="captionToggle">Ativar legenda automática</label>
+          <select id="captionToggle">
+            <option value="on" selected>Sim</option>
+            <option value="off">Não</option>
+          </select>
         </div>
-    </header>
-
-    <!-- Conteúdo Principal -->
-    <main class="container">
-        <section class="posts">
-            <article class="post">
-                <h2>A Beleza na Filosofia de Scruton</h2>
-                <p>Roger Scruton argumentava que a beleza é essencial para a experiência humana, conectando-nos ao transcendente.</p>
-                <a href="#" class="btn">Leia mais</a>
-            </article>
-            <article class="post">
-                <h2>Conservadorismo e Tradição</h2>
-                <p>Scruton via na tradição um pilar para a sociedade, um legado que deve ser preservado e adaptado.</p>
-                <a href="#" class="btn">Leia mais</a>
-            </article>
-            <article class="post">
-                <h2>Crítica à Modernidade</h2>
-                <p>Uma análise profunda sobre como o modernismo erode valores culturais, segundo Scruton.</p>
-                <a href="#" class="btn">Leia mais</a>
-            </article>
-        </section>
-    </main>
-
-    <!-- Rodapé -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Scruton Filosofia. Todos os direitos reservados.</p>
+        <div>
+          <label for="captionPosition">Posição</label>
+          <select id="captionPosition">
+            <option value="bottom" selected>Inferior</option>
+            <option value="center">Centro</option>
+            <option value="top">Superior</option>
+          </select>
         </div>
-    </footer>
+        <div>
+          <label for="captionFont">Fonte</label>
+          <select id="captionFont">
+            <option>Inter</option>
+            <option>Arial</option>
+            <option>Roboto</option>
+            <option>Montserrat</option>
+          </select>
+        </div>
+        <div>
+          <label for="captionColor">Cor</label>
+          <input id="captionColor" type="color" value="#ffffff" />
+        </div>
+        <div>
+          <label for="captionSize">Tamanho</label>
+          <input id="captionSize" type="range" min="16" max="72" value="34" />
+        </div>
+      </div>
+    </section>
 
-    <script src="script.js"></script>
+    <section class="bento preview-card">
+      <h2>4) Preview</h2>
+      <div class="video-preview">
+        <div class="mock-video">9:16 Preview</div>
+        <p id="captionPreview" class="caption-preview">Legenda exemplo: “Esse é o trecho ideal para engajamento.”</p>
+      </div>
+      <button id="exportBtn">Gerar configuração de corte</button>
+    </section>
+
+    <section class="bento result-card">
+      <h2>Saída IA</h2>
+      <pre id="resultBox">Aguardando análise...</pre>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
