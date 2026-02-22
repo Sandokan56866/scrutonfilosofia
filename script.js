@@ -9,6 +9,8 @@ const captionSize = document.getElementById('captionSize');
 const analyzeBtn = document.getElementById('analyzeBtn');
 const exportBtn = document.getElementById('exportBtn');
 const resultBox = document.getElementById('resultBox');
+const githubRepo = document.getElementById('githubRepo');
+const repoLink = document.getElementById('repoLink');
 
 let currentDuration = '30s';
 
@@ -43,6 +45,16 @@ function updateCaptionPreview() {
 [captionToggle, captionPosition, captionFont, captionColor, captionSize].forEach((el) => {
   el.addEventListener('input', updateCaptionPreview);
 });
+
+function updateRepoLink() {
+  const url = githubRepo.value.trim();
+  const isGithub = /^https:\/\/github\.com\/.+/i.test(url);
+  repoLink.href = isGithub ? url : '#';
+  repoLink.style.opacity = isGithub ? '1' : '0.45';
+  repoLink.style.pointerEvents = isGithub ? 'auto' : 'none';
+}
+
+githubRepo.addEventListener('input', updateRepoLink);
 
 async function askGemini(youtubeUrl, apiKey) {
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
@@ -106,10 +118,12 @@ exportBtn.addEventListener('click', () => {
       color: captionColor.value,
       size: `${captionSize.value}px`
     },
-    layout: 'mobile-first bento minimalista'
+    layout: 'mobile-first bento minimalista',
+    repository: githubRepo.value.trim() || 'não informado'
   };
 
   resultBox.textContent = JSON.stringify(payload, null, 2);
 });
 
 updateCaptionPreview();
+updateRepoLink();

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube AI Cutter</title>
+  <title>YouTube Cutter Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -24,6 +24,10 @@
 
       <label for="geminiKey">Gemini API Key</label>
       <input id="geminiKey" type="password" placeholder="AIza..." />
+
+      <label for="githubRepo">Repositório GitHub do projeto</label>
+      <input id="githubRepo" type="url" placeholder="https://github.com/seu-usuario/seu-repo" />
+      <a id="repoLink" class="repo-link" href="#" target="_blank" rel="noopener noreferrer">Abrir repositório</a>
 
       <button id="analyzeBtn">Analisar e sugerir cortes</button>
       <p class="help">Usamos Gemini para sugerir os melhores momentos do vídeo. A chave fica apenas no navegador.</p>

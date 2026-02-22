@@ -41,6 +41,16 @@ h2 { margin-top: 0; font-size: 1rem; }
 .muted, .help { color: var(--muted); }
 .help { font-size: 0.82rem; }
 
+.repo-link {
+  display: inline-block;
+  margin-top: 8px;
+  color: #b9c6ff;
+  font-size: 0.86rem;
+  text-decoration: none;
+}
+
+.repo-link:hover { text-decoration: underline; }
+
 label { display: block; margin: 10px 0 6px; font-size: 0.88rem; color: #d7def8; }
 input, select, button {
   width: 100%;
