@@ -1,100 +1,63 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouTube Cutter Studio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cortador de Vídeo - Desktop</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="app-shell">
-    <section class="bento hero-card">
-      <p class="eyebrow">Mobile First · Bento Box</p>
-      <h1>Cortador de vídeos do YouTube com IA Gemini</h1>
-      <p class="muted">Cole o link, escolha a duração do corte e personalize as legendas para gerar shorts prontos para publicação.</p>
+  <main class="app">
+    <h1>Cortador de Vídeo (Manual)</h1>
+
+    <section class="panel">
+      <h2>Vídeo</h2>
+      <label for="videoInput">Selecione um vídeo local</label>
+      <input id="videoInput" type="file" accept="video/*" />
+      <video id="video" controls></video>
     </section>
 
-    <section class="bento input-card">
-      <h2>1) Vídeo + IA</h2>
-      <label for="youtubeUrl">URL do YouTube</label>
-      <input id="youtubeUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." />
+    <section class="panel grid">
+      <div>
+        <h2>Corte</h2>
+        <label for="startTime">Início (mm:ss ou ss)</label>
+        <input id="startTime" type="text" placeholder="00:10" />
 
-      <label for="geminiKey">Gemini API Key</label>
-      <input id="geminiKey" type="password" placeholder="AIza..." />
+        <label for="endTime">Fim (mm:ss ou ss)</label>
+        <input id="endTime" type="text" placeholder="00:40" />
 
-      <label for="githubRepo">Repositório GitHub do projeto</label>
-      <input id="githubRepo" type="url" placeholder="https://github.com/seu-usuario/seu-repo" />
-      <a id="repoLink" class="repo-link" href="#" target="_blank" rel="noopener noreferrer">Abrir repositório</a>
-
-      <button id="analyzeBtn">Analisar e sugerir cortes</button>
-      <p class="help">Usamos Gemini para sugerir os melhores momentos do vídeo. A chave fica apenas no navegador.</p>
-    </section>
-
-    <section class="bento cut-card">
-      <h2>2) Tamanho do corte</h2>
-      <div class="chips" id="durationChips">
-        <button class="chip active" data-duration="30s">30s</button>
-        <button class="chip" data-duration="45s">45s</button>
-        <button class="chip" data-duration="1m">1m</button>
-        <button class="chip" data-duration="1m20s">1m20s</button>
-        <button class="chip" data-duration="1m45s">1m45s</button>
+        <button id="previewCutBtn">Pré-visualizar corte</button>
       </div>
-      <p class="selected-duration">Selecionado: <strong id="selectedDuration">30s</strong></p>
-    </section>
 
-    <section class="bento subtitle-card">
-      <h2>3) Legendas</h2>
-      <div class="grid-2">
-        <div>
-          <label for="captionToggle">Ativar legenda automática</label>
-          <select id="captionToggle">
-            <option value="on" selected>Sim</option>
-            <option value="off">Não</option>
-          </select>
-        </div>
-        <div>
-          <label for="captionPosition">Posição</label>
-          <select id="captionPosition">
-            <option value="bottom" selected>Inferior</option>
-            <option value="center">Centro</option>
-            <option value="top">Superior</option>
-          </select>
-        </div>
-        <div>
-          <label for="captionFont">Fonte</label>
-          <select id="captionFont">
-            <option>Inter</option>
-            <option>Arial</option>
-            <option>Roboto</option>
-            <option>Montserrat</option>
-          </select>
-        </div>
-        <div>
-          <label for="captionColor">Cor</label>
-          <input id="captionColor" type="color" value="#ffffff" />
-        </div>
-        <div>
-          <label for="captionSize">Tamanho</label>
-          <input id="captionSize" type="range" min="16" max="72" value="34" />
-        </div>
+      <div>
+        <h2>Legenda manual</h2>
+        <label for="captionText">Texto da legenda</label>
+        <textarea id="captionText" rows="4" placeholder="Digite aqui a legenda..."></textarea>
+
+        <label for="fontFamily">Fonte</label>
+        <select id="fontFamily">
+          <option>Arial</option>
+          <option>Verdana</option>
+          <option>Tahoma</option>
+          <option>Georgia</option>
+          <option>Courier New</option>
+        </select>
+
+        <label for="fontSize">Tamanho</label>
+        <input id="fontSize" type="range" min="14" max="64" value="32" />
+
+        <label for="captionX">Posição horizontal (%)</label>
+        <input id="captionX" type="range" min="0" max="100" value="50" />
+
+        <label for="captionY">Posição vertical (%)</label>
+        <input id="captionY" type="range" min="0" max="100" value="85" />
       </div>
     </section>
 
-    <section class="bento preview-card">
-      <h2>4) Preview</h2>
-      <div class="video-preview">
-        <div class="mock-video">9:16 Preview</div>
-        <p id="captionPreview" class="caption-preview">Legenda exemplo: “Esse é o trecho ideal para engajamento.”</p>
-      </div>
-      <button id="exportBtn">Gerar configuração de corte</button>
-    </section>
-
-    <section class="bento result-card">
-      <h2>Saída IA</h2>
-      <pre id="resultBox">Aguardando análise...</pre>
+    <section class="panel">
+      <h2>Configuração gerada</h2>
+      <button id="generateBtn">Gerar JSON da edição</button>
+      <pre id="output">Aguardando configuração...</pre>
     </section>
   </main>
 

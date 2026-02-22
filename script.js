@@ -1,129 +1,105 @@
-const durationChips = document.querySelectorAll('.chip');
-const selectedDuration = document.getElementById('selectedDuration');
-const captionPreview = document.getElementById('captionPreview');
-const captionToggle = document.getElementById('captionToggle');
-const captionPosition = document.getElementById('captionPosition');
-const captionFont = document.getElementById('captionFont');
-const captionColor = document.getElementById('captionColor');
-const captionSize = document.getElementById('captionSize');
-const analyzeBtn = document.getElementById('analyzeBtn');
-const exportBtn = document.getElementById('exportBtn');
-const resultBox = document.getElementById('resultBox');
-const githubRepo = document.getElementById('githubRepo');
-const repoLink = document.getElementById('repoLink');
+const videoInput = document.getElementById('videoInput');
+const video = document.getElementById('video');
+const startTimeInput = document.getElementById('startTime');
+const endTimeInput = document.getElementById('endTime');
+const previewCutBtn = document.getElementById('previewCutBtn');
+const captionText = document.getElementById('captionText');
+const fontFamily = document.getElementById('fontFamily');
+const fontSize = document.getElementById('fontSize');
+const captionX = document.getElementById('captionX');
+const captionY = document.getElementById('captionY');
+const generateBtn = document.getElementById('generateBtn');
+const output = document.getElementById('output');
 
-let currentDuration = '30s';
+const wrapper = document.createElement('div');
+wrapper.className = 'video-wrap';
+video.parentNode.insertBefore(wrapper, video);
+wrapper.appendChild(video);
 
-durationChips.forEach((chip) => {
-  chip.addEventListener('click', () => {
-    durationChips.forEach((c) => c.classList.remove('active'));
-    chip.classList.add('active');
-    currentDuration = chip.dataset.duration;
-    selectedDuration.textContent = currentDuration;
-  });
-});
+const overlay = document.createElement('div');
+overlay.className = 'caption-overlay';
+overlay.textContent = '';
+wrapper.appendChild(overlay);
 
-function updateCaptionPreview() {
-  captionPreview.style.display = captionToggle.value === 'off' ? 'none' : 'block';
-  captionPreview.style.color = captionColor.value;
-  captionPreview.style.fontSize = `${captionSize.value}px`;
-  captionPreview.style.fontFamily = captionFont.value;
+let cutEndSeconds = null;
 
-  const positions = {
-    top: { top: '10%', bottom: 'auto' },
-    center: { top: '50%', bottom: 'auto' },
-    bottom: { top: 'auto', bottom: '12%' }
-  };
+function parseTimeToSeconds(value) {
+  const v = value.trim();
+  if (!v) return null;
+  if (/^\d+$/.test(v)) return Number(v);
 
-  captionPreview.style.top = positions[captionPosition.value].top;
-  captionPreview.style.bottom = positions[captionPosition.value].bottom;
-  captionPreview.style.transform = captionPosition.value === 'center'
-    ? 'translate(-50%, -50%)'
-    : 'translateX(-50%)';
-}
-
-[captionToggle, captionPosition, captionFont, captionColor, captionSize].forEach((el) => {
-  el.addEventListener('input', updateCaptionPreview);
-});
-
-function updateRepoLink() {
-  const url = githubRepo.value.trim();
-  const isGithub = /^https:\/\/github\.com\/.+/i.test(url);
-  repoLink.href = isGithub ? url : '#';
-  repoLink.style.opacity = isGithub ? '1' : '0.45';
-  repoLink.style.pointerEvents = isGithub ? 'auto' : 'none';
-}
-
-githubRepo.addEventListener('input', updateRepoLink);
-
-async function askGemini(youtubeUrl, apiKey) {
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-  const prompt = `Você é um editor de vídeos shorts. Dado este vídeo do YouTube: ${youtubeUrl}, sugira 3 cortes virais com duração de ${currentDuration}. Retorne JSON no formato [{"titulo":"","inicio":"mm:ss","fim":"mm:ss","motivo":""}]`;
-
-  const body = {
-    contents: [
-      {
-        parts: [{ text: prompt }]
-      }
-    ]
-  };
-
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-
-  if (!response.ok) {
-    throw new Error('Falha ao consultar Gemini. Verifique API key e permissões.');
+  const parts = v.split(':').map((p) => p.trim());
+  if (parts.length === 2) {
+    const mm = Number(parts[0]);
+    const ss = Number(parts[1]);
+    if (Number.isNaN(mm) || Number.isNaN(ss)) return null;
+    return mm * 60 + ss;
   }
-
-  const data = await response.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Gemini não retornou conteúdo.';
+  return null;
 }
 
-analyzeBtn.addEventListener('click', async () => {
-  const youtubeUrl = document.getElementById('youtubeUrl').value.trim();
-  const apiKey = document.getElementById('geminiKey').value.trim();
+function updateCaptionOverlay() {
+  overlay.textContent = captionText.value;
+  overlay.style.fontFamily = fontFamily.value;
+  overlay.style.fontSize = `${fontSize.value}px`;
+  overlay.style.left = `${captionX.value}%`;
+  overlay.style.top = `${captionY.value}%`;
+}
 
-  if (!youtubeUrl) {
-    resultBox.textContent = 'Informe uma URL do YouTube.';
+videoInput.addEventListener('change', () => {
+  const file = videoInput.files?.[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  video.src = url;
+  output.textContent = 'Vídeo carregado com sucesso.';
+});
+
+previewCutBtn.addEventListener('click', () => {
+  const start = parseTimeToSeconds(startTimeInput.value);
+  const end = parseTimeToSeconds(endTimeInput.value);
+
+  if (start === null || end === null || end <= start) {
+    output.textContent = 'Tempos inválidos. Use início e fim válidos (ex: 00:10 e 00:35).';
     return;
   }
 
-  if (!apiKey) {
-    resultBox.textContent = 'Informe a Gemini API Key para análise real.';
-    return;
-  }
+  cutEndSeconds = end;
+  video.currentTime = start;
+  video.play();
+  output.textContent = `Prévia do corte iniciada: ${start}s até ${end}s.`;
+});
 
-  resultBox.textContent = 'Analisando com Gemini...';
-
-  try {
-    const aiResult = await askGemini(youtubeUrl, apiKey);
-    resultBox.textContent = aiResult;
-  } catch (error) {
-    resultBox.textContent = `${error.message}\n\nDica: para testes sem API, você pode usar o botão de gerar configuração.`;
+video.addEventListener('timeupdate', () => {
+  if (cutEndSeconds !== null && video.currentTime >= cutEndSeconds) {
+    video.pause();
   }
 });
 
-exportBtn.addEventListener('click', () => {
+[captionText, fontFamily, fontSize, captionX, captionY].forEach((el) => {
+  el.addEventListener('input', updateCaptionOverlay);
+});
+
+generateBtn.addEventListener('click', () => {
+  const start = parseTimeToSeconds(startTimeInput.value);
+  const end = parseTimeToSeconds(endTimeInput.value);
+
+  if (start === null || end === null || end <= start) {
+    output.textContent = 'Não foi possível gerar JSON: tempos de corte inválidos.';
+    return;
+  }
+
   const payload = {
-    source: document.getElementById('youtubeUrl').value || 'não informado',
-    duration: currentDuration,
-    subtitle: {
-      enabled: captionToggle.value === 'on',
-      position: captionPosition.value,
-      font: captionFont.value,
-      color: captionColor.value,
-      size: `${captionSize.value}px`
-    },
-    layout: 'mobile-first bento minimalista',
-    repository: githubRepo.value.trim() || 'não informado'
+    cut: { startSeconds: start, endSeconds: end },
+    caption: {
+      text: captionText.value,
+      fontFamily: fontFamily.value,
+      fontSize: `${fontSize.value}px`,
+      xPercent: Number(captionX.value),
+      yPercent: Number(captionY.value)
+    }
   };
 
-  resultBox.textContent = JSON.stringify(payload, null, 2);
+  output.textContent = JSON.stringify(payload, null, 2);
 });
 
-updateCaptionPreview();
-updateRepoLink();
+updateCaptionOverlay();
