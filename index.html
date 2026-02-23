@@ -1,56 +1,82 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scruton Filosofia</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editor de Corte 9:16</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <!-- Cabeçalho -->
-    <header>
-        <div class="container">
-            <h1>Scruton Filosofia</h1>
-            <nav>
-                <button class="menu-toggle">☰</button>
-                <ul class="nav-menu">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Sobre</a></li>
-                    <li><a href="#">Contato</a></li>
-                </ul>
-            </nav>
+  <main class="app">
+    <h1>Editor de Corte 9:16 (Desktop)</h1>
+
+    <section class="panel controls-grid">
+      <div>
+        <h2>1) Fonte de vídeo</h2>
+        <label for="videoInput">Selecione um vídeo local</label>
+        <input id="videoInput" type="file" accept="video/*" />
+      </div>
+
+      <div>
+        <h2>2) Corte manual</h2>
+        <label for="startTime">Início (mm:ss ou ss)</label>
+        <input id="startTime" type="text" placeholder="00:10" />
+
+        <label for="endTime">Fim (mm:ss ou ss)</label>
+        <input id="endTime" type="text" placeholder="00:40" />
+
+        <button id="previewCutBtn">Prévia do corte</button>
+      </div>
+
+      <div>
+        <h2>3) Ajustes do frame</h2>
+        <label for="zoomRange">Zoom do vídeo</label>
+        <input id="zoomRange" type="range" min="1" max="3" step="0.01" value="1" />
+        <p class="help">Dica: clique e arraste o vídeo na prévia para reposicionar o enquadramento.</p>
+      </div>
+    </section>
+
+    <section class="panel editor-layout">
+      <div>
+        <h2>Prévia interativa (9:16)</h2>
+        <div id="previewStage" class="preview-stage">
+          <video id="sourceVideo" playsinline></video>
+          <div id="captionOverlay" class="caption-overlay" contenteditable="true">Digite a legenda aqui e arraste com o mouse</div>
         </div>
-    </header>
 
-    <!-- Conteúdo Principal -->
-    <main class="container">
-        <section class="posts">
-            <article class="post">
-                <h2>A Beleza na Filosofia de Scruton</h2>
-                <p>Roger Scruton argumentava que a beleza é essencial para a experiência humana, conectando-nos ao transcendente.</p>
-                <a href="#" class="btn">Leia mais</a>
-            </article>
-            <article class="post">
-                <h2>Conservadorismo e Tradição</h2>
-                <p>Scruton via na tradição um pilar para a sociedade, um legado que deve ser preservado e adaptado.</p>
-                <a href="#" class="btn">Leia mais</a>
-            </article>
-            <article class="post">
-                <h2>Crítica à Modernidade</h2>
-                <p>Uma análise profunda sobre como o modernismo erode valores culturais, segundo Scruton.</p>
-                <a href="#" class="btn">Leia mais</a>
-            </article>
-        </section>
-    </main>
-
-    <!-- Rodapé -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Scruton Filosofia. Todos os direitos reservados.</p>
+        <div class="editor-actions">
+          <button id="playPauseBtn">Play/Pause</button>
+          <button id="downloadBtn">Baixar corte 9:16</button>
         </div>
-    </footer>
+      </div>
 
-    <script src="script.js"></script>
+      <div>
+        <h2>4) Legenda</h2>
+        <label for="captionText">Texto da legenda</label>
+        <textarea id="captionText" rows="4" placeholder="Digite a legenda..."></textarea>
+
+        <label for="fontFamily">Fonte</label>
+        <select id="fontFamily">
+          <option>Arial</option>
+          <option>Verdana</option>
+          <option>Tahoma</option>
+          <option>Georgia</option>
+          <option>Courier New</option>
+        </select>
+
+        <label for="fontSize">Tamanho</label>
+        <input id="fontSize" type="range" min="14" max="72" value="32" />
+
+        <label for="fontColor">Cor</label>
+        <input id="fontColor" type="color" value="#ffffff" />
+
+        <pre id="output">Aguardando edição...</pre>
+      </div>
+    </section>
+
+    <canvas id="exportCanvas" width="1080" height="1920" hidden></canvas>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
